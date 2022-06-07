@@ -33,8 +33,12 @@ class Kost extends Model
         return $toArray;
     }
 
-    public function getPicturePathAttribute(){
-        return url('') . Storage::url($this->attribute['picturePath']);
+    // public function getPicturePathAttribute(){
+    //     return url('') . Storage::url($this->attribute['picturePath']);
+    // }
+
+    public function getImageAttribute($image){
+        return asset('storage/' . $image);
     }
 }
 

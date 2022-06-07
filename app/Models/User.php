@@ -26,7 +26,6 @@ class User extends Authenticatable
      *
      * @var string[]
      */
-    // protected $guarded = ["id"];
 
     protected $fillable = [
         'name',
@@ -36,6 +35,7 @@ class User extends Authenticatable
         'phoneNumber',
         'gender',
         'roles',
+        'profile_photo_path'
     ];
 
     /**

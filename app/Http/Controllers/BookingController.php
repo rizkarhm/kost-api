@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use Carbon\Carbon;
+use App\Models\Booking;
 use Illuminate\Http\Request;
-use App\Http\Requests\UserRequest;
-use Illuminate\Support\Facades\Hash;
 
-
-class UserController extends Controller
+class BookingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +15,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::paginate(10);
-        return view('users.index', [
-            'user' => $user
+        $booking = Booking::with(['kost','user'])->paginate(10);
+
+        // dd($booking->all());
+        return view('bookings.index', [
+            'bookings' => $booking
         ]);
     }
 
@@ -30,9 +30,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        //
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -42,13 +41,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['password'] = Hash::make($request->password);
-        $data['profile_photo_path'] = $request->file('profile_photo_path')->store('assets/user', 'public');
-        User::create($data);
-        return redirect()->route('users.index');
+        //
     }
-
 
     /**
      * Display the specified resource.
@@ -56,9 +50,12 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Booking $booking)
     {
-        //
+        // dd($booking);
+        return view('bookings.detail',[
+            'item' => $booking
+        ]);
     }
 
     /**
@@ -67,11 +64,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit($id)
     {
-        return view('users.edit',[
-            'item' => $user
-        ]);
+        //
     }
 
     /**
@@ -81,17 +76,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserRequest $request, User $user)
+    public function update(Request $request, $id)
     {
-        $data = $request->all();
-        $data['password'] = Hash::make($request->password);
-        if($request->file('picturePath'))
-        {
-            $data['profile_photo_path'] = $request->file('profile_photo_path')->store('assets/user', 'public');
-        }
-
-        $user->update($data);
-        return redirect()->route('users.index');
+        //
     }
 
     /**
@@ -100,9 +87,21 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Booking $booking)
     {
-        $user->delete();
-        return redirect()->route('users.index');
+        $booking->delete();
+
+        return redirect()->route('bookings.index');
     }
+
+    public function changeStatus(Request $request, $id, $status)
+    {
+        $booking = Booking::findOrFail($id);
+
+        $booking->status = $status;
+        $booking->save();
+
+        return redirect()->route('bookings.show', $id);
+    }
+
 }

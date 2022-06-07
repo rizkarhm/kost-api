@@ -18,7 +18,6 @@ class Booking extends Model
         'end_date',
         'status',
         'payment_url',
-        'picturePath'
     ];
 
     public function getCreatedAtAttribute($value){
@@ -34,6 +33,19 @@ class Booking extends Model
 
     public function user(){
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function duration($id, $start, $end){
+        $booking = Booking::findOrFail($id);
+
+        $booking->start_date = $start;
+        $booking->end_date = $end;
+
+        $to_date = Carbon::createFromFormat('Y-m-d', $end);
+        $from_date = Carbon::createFromFormat('Y-m-d', $start);
+
+        $duration = $to_date->diffInMonths($from_date);
+        return $duration;
     }
 
 }

@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\API\MidtransController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\KostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,19 +17,33 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+// Homepage
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('dashboard');
 });
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified'
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+
+// Dashboard
+Route::prefix('dashboard')
+    ->middleware(['auth:sanctum','admin'])
+    ->group(function() {
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::resource('users', UserController::class);
+        Route::resource('kosts', KostController::class);
+
+        Route::get('bookings/{id}/status/{status}', [BookingController::class, 'changeStatus'])
+            ->name('bookings.changeStatus');
+        Route::resource('bookings', BookingController::class);
 });
+
+// Route::middleware([
+//     'auth:sanctum',
+//     config('jetstream.auth_session'),
+//     'verified'
+// ])->group(function () {
+//     Route::get('/dashboard', function () {
+//         return view('dashboard');
+//     })->name('dashboard');
+// });
 
 //Midtrans
 Route::get('midtrans/success', [MidtransController::class, 'success']);

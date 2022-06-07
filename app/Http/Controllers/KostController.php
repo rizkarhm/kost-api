@@ -2,24 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Kost;
 use Illuminate\Http\Request;
-use App\Http\Requests\UserRequest;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\KostRequest;
 
-
-class UserController extends Controller
+class KostController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Kost $kost)
     {
-        $user = User::paginate(10);
-        return view('users.index', [
-            'user' => $user
+        // dd($kost->all());
+        $kost = Kost::paginate(10);
+        return view('kosts.index', [
+            'kost' => $kost
         ]);
     }
 
@@ -28,11 +27,10 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Kost $kost)
     {
-        return view('users.create');
+        return view('kosts.create');
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -43,12 +41,10 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $data['password'] = Hash::make($request->password);
-        $data['profile_photo_path'] = $request->file('profile_photo_path')->store('assets/user', 'public');
-        User::create($data);
-        return redirect()->route('users.index');
+        $data['picturePath'] = $request->file('picturePath')->store('assets/kost', 'public');
+        Kost::create($data);
+        return redirect()->route('kosts.index');
     }
-
 
     /**
      * Display the specified resource.
@@ -56,7 +52,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Kost $kost)
     {
         //
     }
@@ -67,10 +63,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(Kost $kost)
     {
-        return view('users.edit',[
-            'item' => $user
+        return view('kosts.edit',[
+            'item' => $kost
         ]);
     }
 
@@ -81,17 +77,17 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserRequest $request, User $user)
+    public function update(Request $request, Kost $kost)
     {
         $data = $request->all();
-        $data['password'] = Hash::make($request->password);
         if($request->file('picturePath'))
         {
-            $data['profile_photo_path'] = $request->file('profile_photo_path')->store('assets/user', 'public');
+            $data['picturePath'] = $request->file('picturePath')->store('assets/kost', 'public');
         }
 
-        $user->update($data);
-        return redirect()->route('users.index');
+        $kost->update($data);
+
+        return redirect()->route('kosts.index');
     }
 
     /**
@@ -100,9 +96,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Kost $kost)
     {
-        $user->delete();
-        return redirect()->route('users.index');
+        $kost->delete();
+        return redirect()->route('kosts.index');
     }
 }

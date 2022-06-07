@@ -3,7 +3,7 @@
 use App\Http\Controllers\API\BookingController;
 use App\Http\Controllers\API\KostController;
 use App\Http\Controllers\API\MidtransController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
