@@ -43,22 +43,14 @@
                                 <div class="text-xl font-bold">{{ $item->user->email }}</div>
                             </div>
                             <div class="w-1/6">
-                                <div class="text-sm">City</div>
-                                <div class="text-xl font-bold">city</div>
+                                <div class="text-sm">Phone</div>
+                                <div class="text-xl font-bold">{{ $item->user->phoneNumber }}</div>
                             </div>
                         </div>
                         <div class="flex flex-wrap mb-3">
                             <div class="w-4/6">
                                 <div class="text-sm">Address</div>
                                 <div class="text-xl font-bold">{{ $item->user->address }}</div>
-                            </div>
-                            <div class="w-1/6">
-                                <div class="text-sm">Number</div>
-                                <div class="text-xl font-bold">number</div>
-                            </div>
-                            <div class="w-1/6">
-                                <div class="text-sm">Phone</div>
-                                <div class="text-xl font-bold">{{ $item->user->phoneNumber }}</div>
                             </div>
                         </div>
                         <div class="flex flex-wrap mb-3">

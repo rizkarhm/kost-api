@@ -13,7 +13,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('user/photo', [UserController::class, 'updatePhoto']);
     Route::post('logout', [UserController::class, 'logout']);
 
-    Route::post('checkout', [BookingController::class, 'checkout']);
+    Route::post('booking', [BookingController::class, 'booking']);
 
     Route::get('booking', [BookingController::class, 'all']);
     Route::post('booking/{id}', [BookingController::class, 'update']);

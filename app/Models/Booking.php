@@ -16,6 +16,7 @@ class Booking extends Model
         'kost_id',
         'start_date',
         'end_date',
+        'total',
         'status',
         'payment_url',
     ];

@@ -63,15 +63,15 @@ class BookingController extends Controller
         return ResponseFormatter::success($booking, 'Booking berhasil diperbarui');
     }
 
-    public function checkout(Request $request){
-        $request->validate([
-            'kost_id' => 'required|exist:kost,id',
-            'user_id' => 'required|exist:user,id',
-            'start_date' => 'required',
-            'end_date' => 'required',
-            'total' => 'required',
-            'status' => 'required'
-        ]);
+    public function booking(Request $request){
+        // $request->validate([
+        //     'kost_id' => 'required|exist:kost,id',
+        //     'user_id' => 'required|exist:user,id',
+        //     'start_date' => 'required',
+        //     'end_date' => 'required',
+        //     'total' => 'required',
+        //     'status' => 'required'
+        // ]);
 
         $booking = Booking::create([
             'kost_id' => $request->kost_id,
@@ -93,34 +93,32 @@ class BookingController extends Controller
         $booking = Booking::with(['kost', 'user'])->find($booking->id);
 
         //Create transaksi midtrans
-        $midtrans = [
-            'booking_details' => [
-                'order_id' => $booking->id,
+        $midtrans = array(
+            'transaction_details' => array(
+                'order_id' =>  $booking->id,
                 'gross_amount' => (int) $booking->total,
-            ],
-            'customer_details' => [
-                'first_name' => $booking->user->name,
-                'email' -> $booking->user->email,
-            ],
-            'enable_payments' => [
-                'gopay',
-                'bank_transfer'
-            ],
-            'vtweb' => []
-        ]
+            ),
+            'customer_details' => array(
+                'first_name'    => $booking->user->name,
+                'email'         => $booking->user->email
+            ),
+            'enabled_payments' => array('gopay','bank_transfer'),
+            'vtweb' => array()
+        );
 
         //Memanggil midtrans
         try {
-            //Ambil halaman payment midtrans
+            // Ambil halaman payment midtrans
             $paymentUrl = Snap::createTransaction($midtrans)->redirect_url;
+
             $booking->payment_url = $paymentUrl;
             $booking->save();
 
-            //Mengembalikan data ke API
-            return ResponseFormatter::success($booking, 'Transaksi Berhasil');
+            // Redirect ke halaman midtrans
+            return ResponseFormatter::success($booking,'Transaksi berhasil');
         }
-        catch(Exception $e){
-            return ResponseFormatter::error($e->getMessage(), 'Transaksi Gagal');
+        catch (Exception $e) {
+            return ResponseFormatter::error($e->getMessage(),'Transaksi Gagal');
         }
     }
 }
